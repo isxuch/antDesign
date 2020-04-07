@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
+import './plugins/antd.js'
+import './assets/extend.less'
 
 Vue.config.productionTip = false
 
