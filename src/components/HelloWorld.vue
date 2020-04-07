@@ -1,7 +1,16 @@
 <template>
-    <a-layout id="components-layout-demo-custom-trigger">
+    <a-layout id="menuBox">
         <a-layout-sider :trigger="null" collapsible v-model="collapsed">
-            <div class="logo"></div>
+            <div class="system-top" v-show="!collapsed">
+                <a-icon type="home" />
+                <span>GNS</span>
+                快捷菜单
+                <a-icon type="caret-down" />
+            </div>
+            <div class="logo-no" v-show="collapsed"></div>
+            <div class="logo" v-show="!collapsed">
+                <img src="../assets/gnsLogo.png" alt />
+            </div>
             <a-menu
                 :defaultSelectedKeys="['1']"
                 :defaultOpenKeys="['1']"
@@ -20,11 +29,39 @@
         </a-layout-sider>
         <a-layout>
             <a-layout-header style="background: #fff; padding: 0">
-                <a-icon
-                    class="trigger"
-                    :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-                    @click="toggleCollapsed()"
-                />
+                <a-row>
+                    <a-col :span="1" :xs="7" :sm="1">
+                        <a-icon
+                            class="trigger"
+                            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+                            @click="toggleCollapsed()"
+                        />
+                    </a-col>
+                    <a-col :span="23" :xs="17" :sm="23">
+                        <div class="head-list">
+                            <div class="left">
+                                <div class="item">
+                                    <a-icon type="alipay-circle" />支付宝
+                                </div>
+                            </div>
+                            <div class="right">
+                                <a-icon type="cloud-download" />
+                                <a-icon type="delete" />
+                                <a-icon type="cloud-sync" />
+                                <span>
+                                    <a-popover placement="bottom">
+                                        <template slot="content">
+                                            <p>所属公司：申通国际</p>
+                                            <a-button @click="showModal" type="primary" block>退出</a-button>
+                                        </template>
+                                        欢迎，贤心
+                                    </a-popover>
+                                </span>
+                                <a-icon type="caret-down" />
+                            </div>
+                        </div>
+                    </a-col>
+                </a-row>
             </a-layout-header>
             <a-layout-content>
                 <a-tabs
@@ -45,6 +82,17 @@
                 </a-tabs>
             </a-layout-content>
         </a-layout>
+        <a-modal
+            title="温馨提示"
+            :visible="visible"
+            @ok="handleOk"
+            :confirmLoading="confirmLoading"
+            @cancel="handleCancel"
+            cancelText="取消"
+            okText="确定"
+        >
+            <p>{{ModalText}}</p>
+        </a-modal>
     </a-layout>
 </template>
 <script>
@@ -138,12 +186,15 @@ export default {
                         }
                     ]
                 }
-            ]
+            ],
+            ModalText: "确定退出登陆吗？",
+            visible: false,
+            confirmLoading: false
         };
     },
     methods: {
         change(activeKey) {
-          console.log(activeKey,'activeKey');
+            console.log(activeKey, "activeKey");
         },
         toggleCollapsed() {
             this.collapsed = !this.collapsed;
@@ -155,7 +206,7 @@ export default {
             this[action](targetKey);
         },
         add(data) {
-          console.log(data,'4555')
+            console.log(data, "4555");
             const panes = this.panes;
             const activeKey = `newTab${this.newTabIndex++}`;
             panes.push({
@@ -184,15 +235,30 @@ export default {
             }
             this.panes = panes;
             this.activeKey = activeKey;
+        },
+        // 退出登陆确认框
+        showModal() {
+            this.visible = true;
+        },
+        handleOk(e) {
+            this.confirmLoading = true;
+            setTimeout(() => {
+                this.visible = false;
+                this.confirmLoading = false;
+                this.$message.success('退出成功');
+            }, 2000);
+        },
+        handleCancel(e) {
+            this.visible = false;
         }
     }
 };
 </script>
 <style lang="less">
-#components-layout-demo-custom-trigger {
+#menuBox {
     height: 100%;
 }
-#components-layout-demo-custom-trigger .trigger {
+#menuBox .trigger {
     font-size: 18px;
     line-height: 64px;
     padding: 0 24px;
@@ -200,14 +266,45 @@ export default {
     transition: color 0.3s;
 }
 
-#components-layout-demo-custom-trigger .trigger:hover {
+#menuBox .trigger:hover {
     color: #1890ff;
 }
 
-#components-layout-demo-custom-trigger .logo {
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
+#menuBox .logo {
+    text-align: center;
     margin: 16px;
+}
+
+.logo-no {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 20px;
+}
+
+.head-list {
+    width: 100%;
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    .right {
+        i {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        span {
+            margin-right: 6px;
+        }
+    }
+}
+
+.system-top {
+    text-align: center;
+    color: #fff;
+    padding-top: 20px;
+    span {
+        margin: 0 8px 0 10px;
+    }
 }
 
 .ant-tabs-bar {
