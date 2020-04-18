@@ -97,6 +97,7 @@
 </template>
 <script>
 import { Menu } from "ant-design-vue";
+import { menuList } from '../assets/data'
 const SubMenu = {
     template: `
       <a-sub-menu :key="menuInfo.key" v-bind="$props" v-on="$listeners">
@@ -143,59 +144,20 @@ export default {
             activeKey: panes[0].key,
             panes,
             newTabIndex: 0,
-            list: [
-                {
-                    key: "1",
-                    title: "菜单一",
-                    icon: "alipay-circle",
-                    children: [
-                        {
-                            key: "101",
-                            title: "系统入口"
-                        },
-                        {
-                            key: "102",
-                            title: "盟商产品"
-                        },
-                        {
-                            key: "103",
-                            title: "文件下载"
-                        },
-                        {
-                            key: "104",
-                            title: "升级公告"
-                        }
-                    ]
-                },
-                {
-                    key: "2",
-                    title: "菜单二",
-                    icon: "github",
-                    children: [
-                        {
-                            key: "201",
-                            title: "订阅管理"
-                        },
-                        {
-                            key: "202",
-                            title: "推送记录"
-                        },
-                        {
-                            key: "203",
-                            title: "邮箱微信设置"
-                        }
-                    ]
-                }
-            ],
+            list: menuList,
             ModalText: "确定退出登陆吗？",
             visible: false,
             confirmLoading: false
         };
     },
+    created(){
+    },
     methods: {
+        // 头部菜单栏切换
         change(activeKey) {
             console.log(activeKey, "activeKey");
         },
+        // 左侧菜单大小风格切换
         toggleCollapsed() {
             this.collapsed = !this.collapsed;
         },
@@ -205,6 +167,7 @@ export default {
         onEdit(targetKey, action) {
             this[action](targetKey);
         },
+        // 添加菜单
         add(data) {
             console.log(data, "4555");
             const panes = this.panes;
@@ -217,6 +180,7 @@ export default {
             this.panes = panes;
             this.activeKey = activeKey;
         },
+        // 移除菜单
         remove(targetKey) {
             let activeKey = this.activeKey;
             let lastIndex;
